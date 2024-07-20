@@ -1,17 +1,13 @@
-//
-// Created by Perfare on 2020/7/4.
-//
-
-#include "il2cpp_dump.h"
+#include <iostream>
+#include <chrono>
+#include <thread>
 #include <dlfcn.h>
-#include <cstdlib>
-#include <cstring>
-#include <cinttypes>
-#include <string>
-#include <vector>
+#include <unistd.h> // Para a função sleep
 #include <sstream>
 #include <fstream>
-#include <unistd.h>
+#include <vector>
+#include <cstring>
+#include <cinttypes>
 #include "xdl.h"
 #include "log.h"
 #include "il2cpp-tabledefs.h"
@@ -344,7 +340,10 @@ void il2cpp_api_init(void *handle) {
 }
 
 void il2cpp_dump(const char *outDir) {
-    LOGI("dumping...");
+    LOGI("Waiting for 12 seconds before dumping...");
+    std::this_thread::sleep_for(std::chrono::seconds(12)); // Aguarda por 12 segundos
+    
+    LOGI("Dumping...");
     size_t size;
     auto domain = il2cpp_domain_get();
     auto assemblies = il2cpp_domain_get_assemblies(domain, &size);
@@ -416,7 +415,7 @@ void il2cpp_dump(const char *outDir) {
             }
         }
     }
-    LOGI("write dump file");
+    LOGI("Writing dump file");
     auto outPath = std::string(outDir).append("/files/dump.cs");
     std::ofstream outStream(outPath);
     outStream << imageOutput.str();
@@ -425,5 +424,5 @@ void il2cpp_dump(const char *outDir) {
         outStream << outPuts[i];
     }
     outStream.close();
-    LOGI("dump done!");
+    LOGI("Dump done!");
 }
